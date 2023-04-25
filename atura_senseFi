@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# AUTOR: PABLO SIERRA VERSION: 1.0
+#--------------------------------------------
+# atura_senseFi
+#--------------------------------------------
+#############################################
+# Script para parar procesos senseFi
+#############################################
+
+# Help
+Help(){
+echo "Uso -> ./atura_senseFi   "
+echo "Proceso rutina del crontab"
+echo "Función: Script para parar procesos senseFi"
+echo "NO ARGUMENTOS"
+exit
+}
+if [ "$#" != 0 ]
+then
+ Help
+fi
+
+if [ $(sudo ps h -lfC senseFi | awk -v argu=S '$2 == argu' | wc -l) -eq 0 ]
+then
+ echo "No hay procesos"
+ exit 1
+else
+ while IFS= read -r proc
+ do
+  
+  echo $proc | awk '{print $4}' >> /home/milax/PID_Parados.txt
+  numero=`echo $proc | awk '{print $4}'`
+
+  sudo kill -19 $numero
+  
+ done <<< $( sudo ps h -lfC senseFi | awk -v argu=S '$2 == argu' )
+fi
+
+#18) SIGCONT	19) SIGSTOP

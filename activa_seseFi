@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# AUTOR: PABLO SIERRA VERSION: 1.0
+#--------------------------------------------
+# activa_seseFi
+#--------------------------------------------
+#############################################
+# Script para activar procesos senseFi cuyos
+# PID están en PID_Parados.txt
+#############################################
+
+# Help
+Help(){
+echo "Uso -> ./activa_seseFi   "
+echo "Proceso rutina del crontab"
+echo "Función: Script para activar procesos senseFi cuyos PID están en PID_Parados.txt"
+echo "NO ARGUMENTOS"
+exit
+}
+if [ "$#" != 0 ]
+then
+ Help
+fi
+
+
+if test -f /home/milax/PID_Parados.txt
+then
+    while IFS= read -r numero
+    do  
+        sudo kill -18 $numero 1>&2
+        sleep 30
+    done <<< $( cat /home/milax/PID_Parados.txt )
+    
+    rm PID_Parados.txt
+else
+    echo "No hay procesos pendientes"
+fi
+
+
+
